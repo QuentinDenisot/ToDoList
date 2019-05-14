@@ -27,7 +27,7 @@ import checkConnectivity from '/js/connection.js';
   skeleton.removeAttribute('active');
   listPage.setAttribute('active', '');
 
-  app.appendChild(toDoList);
+  document.querySelector('main').appendChild(toDoList);
 
   checkConnectivity();
   document.addEventListener('connection-changed', ({ detail }) => {
