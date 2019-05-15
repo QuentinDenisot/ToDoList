@@ -16,13 +16,24 @@ export default class ToDoList extends LitElement
         this.tasksCollection    = JSON.parse(tasksCollection);
     }
 
+    firstUpdated()
+    {
+        this.shadowRoot.querySelector('form').addEventListener('submit', (event) =>
+        {
+            event.preventDefault();
+
+            const addEvent = new CustomEvent('addEvent');
+            window.dispatchEvent(addEvent);
+        });
+    }
+
     render()
     {
         let items = "";
 
         for (let key in this.tasksCollection)
         {
-            const item      = this.tasksCollection[key];
+            const item = this.tasksCollection[key];
 
             items += `<div>
                         <input type="checkbox" ${(item.status == 'done') ? ' checked ' : ''}/>
@@ -51,7 +62,7 @@ export default class ToDoList extends LitElement
                 {
                     padding-top: 10px;
                 }
-                .todolist-container > main > div:first-child
+                .todolist-container > main > div:first-child > form
                 {
                     align-items: stretch;
                     display: flex;
@@ -60,7 +71,7 @@ export default class ToDoList extends LitElement
                     margin: 10px;
                     box-shadow: 0 0 7px 0px #e4e4e4;
                 }
-                .todolist-container > main > div:first-child > input
+                .todolist-container > main > div:first-child > form > input
                 {
                     padding: 5px;
                     border-top-left-radius: 5px;
@@ -69,7 +80,7 @@ export default class ToDoList extends LitElement
                     flex: 1;
                     line-height: 25px;
                 }
-                .todolist-container > main > div:first-child > button
+                .todolist-container > main > div:first-child > form > button
                 {
                     border-top-right-radius: 5px;
                     border-bottom-right-radius: 5px;
@@ -88,8 +99,10 @@ export default class ToDoList extends LitElement
                 <header>${this.title}</header>
                 <main>
                     <div>
-                        <input type="text" />
-                        <button>+</button>
+                        <form action="">
+                            <input type="text" class="todolist-input" required />
+                            <button>+</button>
+                        </form>
                     </div>
                     ${document.createRange().createContextualFragment(items)}
                 </main>

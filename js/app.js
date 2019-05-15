@@ -3,23 +3,74 @@ import ToDoList from '/js/components/todolist/todolist.js';
 import { openDB } from '/node_modules/idb/build/esm/index.js';
 import checkConnectivity from '/js/connection.js';
 
-(async function(document) {
+(async function(document)
+{
+  try
+  {
+    getData();
+    addTask();
+  }
+  catch (error)
+  {
+    console.log(error);
+  }
 
-  const toDoList = new ToDoList();
-  toDoList.initComponent('My To-Do List', JSON.stringify({
-    "item_1": {
-      "libelle": "Faire les courses",
-      "status": "todo"
-    },
-    "item_2": {
-      "libelle": "Sortir les poubelles",
-      "status": "todo"
-    },
-    "item_3": {
-      "libelle": "Bosser le projet annuel",
-      "status": "done"
+  async function getData()
+  {
+    const data = await fetch('/data/tasks.json');
+    const json = await data.json();
+
+    const database = await openDB('app-store', 1,
+    {
+      upgrade(db)
+      {
+        db.createObjectStore('tasks');
+      }
+    });
+
+    if (navigator.onLine)
+    {
+      await database.put('tasks', json, 'tasks');
     }
-  }));
+
+    const tasks = await database.get('tasks', 'tasks');
+    window.nbTasks = tasks.tasks.length;
+
+    // console.log(tasks);
+
+    const toDoList = new ToDoList();
+    toDoList.initComponent('My To-Do List', JSON.stringify(tasks.tasks));
+
+    while (document.getElementById('content').firstChild)
+    {
+      document.getElementById('content').removeChild(document.getElementById('content').firstChild); 
+    }
+
+    document.querySelector('#content').appendChild(toDoList);
+  }
+
+  function addTask()
+  {
+    window.addEventListener('addEvent', async (event) =>
+    {
+      await fetch('http://localhost:3000/tasks', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "id": (window.nbTasks + 1).toString(),
+            "libelle": document.querySelector('todo-list').shadowRoot.querySelector('.todolist-input').value,
+            "status": "todo"
+          })
+      });
+
+      getData();
+    });
+  }
 
   const app = document.querySelector('#app');
   const skeleton = app.querySelector('.skeleton');
@@ -27,11 +78,9 @@ import checkConnectivity from '/js/connection.js';
   skeleton.removeAttribute('active');
   listPage.setAttribute('active', '');
 
-  document.querySelector('main').appendChild(toDoList);
-
   checkConnectivity();
   document.addEventListener('connection-changed', ({ detail }) => {
-    console.log(detail);
+    // console.log(detail);
   });
 
   // try {

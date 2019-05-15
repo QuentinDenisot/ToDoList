@@ -53,7 +53,7 @@
     #app > main { padding: 0 10px; }
     #app > main > [active] { display: block; }
     #app > main > * { display: none; }  
-    #app > main > todo-list { display: initial; }  
+    #app > main > #content { display: initial; }  
 
     /* Skeleton */
     .skeleton {
@@ -119,6 +119,7 @@
       <div class="skeleton" active><div class="hero"></div><div class="title"></div><div class="text"></div></div>
       <section page="list"><div class="ctn"><h1>Loaded !</h1></div></section>
       <section page="view"></section>
+      <div id="content"></div>
     </main>
   </section>
   <script type="module" src="/js/app.js" async></script>

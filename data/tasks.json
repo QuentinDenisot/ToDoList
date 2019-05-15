@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "libelle": "Faire les courses",
+      "status": "todo"
+    },
+    {
+      "id": "2",
+      "libelle": "Sortir les poubelles",
+      "status": "todo"
+    },
+    {
+      "id": "3",
+      "libelle": "Bosser le projet annuel",
+      "status": "done"
+    }
+  ]
+}
